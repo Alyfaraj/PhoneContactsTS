@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { Contact, ContactsContextType } from '../types/contacts'
 import { getAll } from 'react-native-contacts'
+import { PermissionsAndroid, Platform } from 'react-native';
 
 export const AppContext = createContext<ContactsContextType | null>(null);
 
@@ -28,14 +29,48 @@ export const AppProvider: React.FC<React.ReactNode> = ({ children }) => {
     }
 
 
+    // search with name in contacts list 
+    const onSearch = (word: string) => {
+        if (word) {
+            let result = contacts.filter(item =>
+                Object.keys(item).some(k => item.givenName.includes(word))
+            );
+
+            setContacts(result);
+        }
+        else {
+            getllConteacts()
+        }
+    }
+
+
+    // get all contacts from react-native-contacts
     const getllConteacts = () => {
         getAll()
             .then(allContacts => setContacts(allContacts))
             .catch(err => console.log(err))
     }
 
+    const getPermissionsAndroid = () => {
+        PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+            {
+                'title': 'Contacts',
+                'message': 'This app would like to view your contacts.',
+                'buttonPositive': 'Please accept bare mortal'
+            }
+        )
+            .then(() => {
+                getllConteacts()
+            })
+            .catch(err => console.log(err))
+
+    }
 
     useEffect(() => {
+        if (Platform.OS == 'android') {
+            getPermissionsAndroid()
+        }
         getllConteacts()
     }, [])
 
@@ -47,7 +82,8 @@ export const AppProvider: React.FC<React.ReactNode> = ({ children }) => {
                 removeFromList,
                 contacts,
                 isContactSelected,
-                selectedContacts
+                selectedContacts,
+                onSearch
             }}
         >
             {children}

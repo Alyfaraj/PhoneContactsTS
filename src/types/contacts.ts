@@ -15,4 +15,5 @@ export interface ContactsContextType {
     removeFromList: (id: string) => void;
     selectedContacts?: Contact[],
     isContactSelected: (id: string) => boolean | any;
+    onSearch: (text: string) => void
 }

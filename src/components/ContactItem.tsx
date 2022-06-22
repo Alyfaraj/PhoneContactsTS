@@ -1,17 +1,20 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { FC, useContext } from 'react'
 import { Contact, ContactsContextType } from '../types/contacts'
 import Dimensions from '../themes/Dimensions'
 import Colors from '../themes/Colors'
 import { AppContext } from '../context/AppContext'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
 
-const ContactItem = (item: Contact) => {
+const ContactItem: FC<Contact> = (item) => {
+    
     const {
         addToList,
         removeFromList,
-        isContactSelected } = useContext(AppContext) as ContactsContextType
+        isContactSelected
+    } = useContext(AppContext) as ContactsContextType
 
 
 
@@ -35,7 +38,7 @@ const ContactItem = (item: Contact) => {
                         {item.jobTitle ? <Text style={styles.jobTitle} >{item.jobTitle}</Text> : null}
                     </View>
                 </View>
-                <Text style={{ color: Colors.textColor }} >{isContactSelected(item.recordID) ? 'Selected' : 'NotSelected'}</Text>
+                <Icon name={isContactSelected(item.recordID) ? 'check-circle' : 'checkbox-blank-circle-outline'} size={23} color={isContactSelected(item.recordID) ? Colors.textColor : 'rgba(200,200,200,.3)'} />
             </View>
         </Pressable>
 
